@@ -8,7 +8,6 @@ public class hotelMesange {
 
         Scanner sc = new Scanner(System.in);
         int choixUtilisateur = 0;
-<<<<<<< HEAD
         int i;
 //        Initialisation du tableau d'occupation des chambres et le tableau des disponibilités
 
@@ -17,26 +16,17 @@ public class hotelMesange {
         // int[] tabOccCh = {4,2,0,2,4}; //hotel plein
         // int[] tabOccCh = {0,0,0,0,0}; //hotel vide
         //autre cas
-=======
-        int i=0;
-
-//        Initialisation du tableau d'occupation des chambres et le tableau des disponibilités
-
-        // int[] tabOccCh = {4,2,0,2,4}; //hotel plein
-        // int[] tabOccCh = {0,0,0,0,0}; //hotel vide
-         int[] tabOccCh = {0,2,1,0,0}; //cas du TD
->>>>>>> 69196cab996baa2da031a8d7864c148940f611f5
         // int[] tabOccCh = {4,0,4,2,4}; //une chambre de 2 disponible
         // int[] tabOccCh = {4,2,0,2,4}; //une chambre de 4 disponible
         // int[] tabOccCh = {4,2,0,0,4}; //une chambre de 4 et une chambre de 2 disponibles.
 
- // départ du programme pour l'utilisateur, avec MAJ des dispos à chaque retour de la boucle while
+        // départ du programme pour l'utilisateur, avec MAJ des dispos à chaque retour de la boucle while
 
         while (choixUtilisateur !=3) {
             System.out.println("\n  _______________________  \n Etat de l'occupation des chambres : \n **************");
-                for (i = 0; i < tabOccCh.length; i++) {
-                    System.out.println("Chambre " + (i + 1) + ": " + tabOccCh[i] + " personne(s)");
-                }
+            for (i = 0; i < tabOccCh.length; i++) {
+                System.out.println("Chambre " + (i + 1) + ": " + tabOccCh[i] + " personne(s)");
+            }
 
 // on vérifie s'il y a des chambres disponibles => plus possible de remplir de chambre si l'hotel est plein
 
@@ -44,10 +34,6 @@ public class hotelMesange {
             boolean hotelPlein = true;
             for (i = 0; i < tabOccCh.length; i++) {
                 if (tabOccCh[i] == 0) {
-<<<<<<< HEAD
-=======
-                    // System.out.println("\n Il y a au moins une chambre de dispo");
->>>>>>> 69196cab996baa2da031a8d7864c148940f611f5
                     j = i; // on anticipe pour le cas où il y a une ou deux personnes dans le groupe pour avoir le numéro de chambre (pour l'attribution des chambres)
                     hotelPlein = false;
                     break;
@@ -65,13 +51,9 @@ public class hotelMesange {
                 }
             }
 
-          System.out.println("\n  _______________________  \n");
+            System.out.println("\n  _______________________  \n");
 
-<<<<<<< HEAD
 //       Distinction des cas 1/ si l'hôtel a une chambre disponible 2/ si l'hotel est plein 3/ si l'hôtel est vide
-=======
-//       Distinction des cas > si l'hôtel a une chambre disponible > si l'hotel est plein > si l'hôtel est vide
->>>>>>> 69196cab996baa2da031a8d7864c148940f611f5
 
             if (hotelPlein) {
                 System.out.println("Hotel plein, pas d'arrivée possible. \n \n Que voulez-vous faire ? \n *************** \n Gérer un départ = 2 \n Quitter le programme = 3");
@@ -81,13 +63,9 @@ public class hotelMesange {
                     choixUtilisateur = Integer.parseInt(sc.nextLine());
                 }
 
-<<<<<<< HEAD
             }
 
             else if (hotelVide) {
-=======
-            } else if (hotelVide) {
->>>>>>> 69196cab996baa2da031a8d7864c148940f611f5
                 System.out.println("Hotel vide, pas de départ possible. \n \n Que voulez-vous faire ? \n *************** \n Gérer une arrivée = 1 \n Quitter le programme = 3");
                 choixUtilisateur = Integer.parseInt(sc.nextLine());
                 while (choixUtilisateur != 1 && choixUtilisateur != 3 ) {
@@ -100,11 +78,7 @@ public class hotelMesange {
             else {
                 System.out.println("Que voulez-vous faire ? \n ************* \n Gérer une arrivée = 1 \n Gérer un départ = 2 \n Quitter le programme = 3");
                 choixUtilisateur = Integer.parseInt(sc.nextLine());
-<<<<<<< HEAD
                 while (choixUtilisateur > 3 ) {
-=======
-                while (choixUtilisateur != 1 && choixUtilisateur != 2 && choixUtilisateur != 3 ) {
->>>>>>> 69196cab996baa2da031a8d7864c148940f611f5
                     System.out.println("Merci d'entrer un choix valide : 1|2|3");
 
                     choixUtilisateur = Integer.parseInt(sc.nextLine());
@@ -122,17 +96,10 @@ public class hotelMesange {
 
 //      Choix n°1 : gestion des arrivées
 
-<<<<<<< HEAD
             else if (choixUtilisateur == 1) {
                 //     Nombre de personnes du groupe
 
                 int nbrPers;
-=======
-            if (choixUtilisateur == 1) {
-                //     Nombre de personnes du groupe
-
-                int nbrPers = 0;
->>>>>>> 69196cab996baa2da031a8d7864c148940f611f5
                 System.out.println("Nombre de personnes du groupe (entre 1 et 4 personnes) ?");
                 nbrPers = Integer.parseInt(sc.nextLine());
 
@@ -176,13 +143,8 @@ public class hotelMesange {
 
 //      Choix n°2 : gestion des départs (on a vérifié que l'hôtel n'est pas vide)
 
-<<<<<<< HEAD
             else if (choixUtilisateur == 2) {
                 int numCh ;
-=======
-            if (choixUtilisateur == 2) {
-                int numCh = 0;
->>>>>>> 69196cab996baa2da031a8d7864c148940f611f5
 
                 System.out.println("Numéro de chambre qui se libère ?");
                 numCh = Integer.parseInt(sc.nextLine());
