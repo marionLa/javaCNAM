@@ -12,13 +12,7 @@ public class hotelMesange {
 //        Initialisation du tableau d'occupation des chambres et le tableau des disponibilités
 
         int[] tabOccCh = {0,2,1,0,0}; //cas du TD
-        //Cas limites
-        // int[] tabOccCh = {4,2,0,2,4}; //hotel plein
-        // int[] tabOccCh = {0,0,0,0,0}; //hotel vide
-        //autre cas
-        // int[] tabOccCh = {4,0,4,2,4}; //une chambre de 2 disponible
-        // int[] tabOccCh = {4,2,0,2,4}; //une chambre de 4 disponible
-        // int[] tabOccCh = {4,2,0,0,4}; //une chambre de 4 et une chambre de 2 disponibles.
+
 
         // départ du programme pour l'utilisateur, avec MAJ des dispos à chaque retour de la boucle while
 
