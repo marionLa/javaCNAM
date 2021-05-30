@@ -15,6 +15,9 @@ import java.util.Scanner;
 * */
 
 public class ProjetMasterMind {
+
+    //variables globales : tableau des couleurs, nombre de couleurs de jeu et nombre de tours de jeu
+
     static String[] TAB_REF_COLORS = {
             "rouge",
             "jaune",
@@ -26,56 +29,57 @@ public class ProjetMasterMind {
             "fuchsia"
     };
     static int NB_COLORS = 4;
-    static int NB_TOUR_JEU = 3;
+    static int NB_TOUR_JEU = 12;
 
     public static void main(String[] args) {
+
+        // initialisation des variables
         Scanner sc = new Scanner(System.in);
-        int tourCount = 0;
+        int tourCount = 0; // compteur de tours
+        boolean hadHint = false; //vérification si l'utilisateur a déjà eu un indice
+        boolean newGame = false; //le joueur souhaite rejouer ou non
+        int numberOfGames = 1; //nombre de parties
+        int winGames = 0; //nombre de parties gagnées
 
-
-        String[][] tabResult = new String[NB_TOUR_JEU+1][5]; //résultat du tour
+        //initialisation des tableaux
         String[][] tabGoodResults = new String[NB_TOUR_JEU+1][2]; //tableau des résultats couleurs
-        String[][] tabColResLabels = {{"\t \t", "1 \t", "2 \t", "3 \t", "4 \t"}}; // labels colonnes
-        String[][] tabColGoodResLabels = {{"GoodPlace", "GoodColor"}}; //labels des colonnes résultats
-
+        String[] combinaisonSecrete = new String[NB_COLORS];
 
         //Génération tabRowLabels (labels des lignes) en fonction du nombre de tours ou des libellés initialisés.
+        String[][] tabColGoodResLabels = {{"GoodPlace", "GoodColor"}}; //labels des colonnes résultats
         makeTabGoodResultLabels(tabGoodResults[0], tabColGoodResLabels[0]);
-        makeTabResultLabels(tabResult,tabColResLabels,NB_TOUR_JEU);
+        String [][] tabResult = makeTabResultLabels(NB_COLORS,NB_TOUR_JEU);
 
-        //Génération aléatoire de la série
-        String[] combinaisonSecrete = generateRandomCombination();
-        System.out.println(Arrays.toString(combinaisonSecrete));
         //info User -> interface de jeu
         helpContext();
 
+        //instructions pour démarrer le jeu
         if (yesNoChoice(sc, "Démarrer le jeu")) return;
-        boolean hadHint = false;
-        boolean newGame = true;
-        int numberOfGames = 1;
-        int winGames = 0;
+
         //début du jeu, boucle while sur NB_TOUR_JEU
             do {
+                //(ré)initialisation du jeu en cas de nouvelle partie
                 if (!newGame){
                     hadHint = false;
                     combinaisonSecrete = generateRandomCombination();
-                    System.out.println(Arrays.toString(combinaisonSecrete));
                     tourCount = 0;
                     numberOfGames++;
-                    System.out.println(numberOfGames);
                     newGame = true;
-
                 }
+
+                //affichage du n° de tour
                 System.out.println("\n>> Tour n°" + (tourCount + 1) + "/" + NB_TOUR_JEU + " <<");
                 String[] tabColors = new String[NB_COLORS]; //on réinitialise la série de l'utilisateur
+
                 //---------------Choix de la série utilisateur----------------------------------
-                // boucle while sur les choix des 4 couleurs
+                // boucle while sur les choix des NB_COLORS
                 {
                     int i = 0;
                     String choixCouleur;
                     int userEnter;
 
                         do {
+                            //recueil choix utilisateur pour la couleur n°i
                             System.out.print(">> quit / help / hint OU choix de la couleur n°" + (i + 1) + " (rouge, jaune, vert, bleu, orange, blanc, violet, fuchsia) : ");
                             choixCouleur = sc.nextLine();
 
@@ -103,14 +107,14 @@ public class ProjetMasterMind {
                                case 4: //help
                                    helpContext();
                                    break;
-                               case 5: //
+                               case 5: //indice possible 1x
                                    if (!hadHint){ getHint(combinaisonSecrete);}
                                    else{
                                    System.out.println("Désolé, il semblerait que vous ayez déjà eu un indice...");
                                    }
                                    hadHint = true;
                                    break;
-                               default: //cas bonus... on ne sait pas comment il peut arriver...
+                               default: //cas inconnu...
                                    System.out.println("Quelque chose ne colle vraiment pas... je ne sais même pas comment cette erreur pourrait arriver...");
                                    break;
                                     }
@@ -125,21 +129,21 @@ public class ProjetMasterMind {
                 System.out.println("Combinaison choisie = " + Arrays.toString(tabColors)); //retour pour vérif utilisateur
 
                 //nombre de couleurs bien placées + sortie si gagné
-                int goodPlaceColor = getGoodPlaceColor(tourCount, tabGoodResults, combinaisonSecrete, tabColors);
-                tabGoodResults[tourCount + 1][0] = goodPlaceColor + "/4 \t";
+                int goodPlaceColor = getGoodPlaceColor(combinaisonSecrete, tabColors);
+                tabGoodResults[tourCount + 1][0] = goodPlaceColor + "/" + NB_COLORS +" \t";
                 boolean userWin = doesUserWin(goodPlaceColor,combinaisonSecrete);
+                // si l'uitlisateur a gagné
                 if (userWin) {
                     if (hadHint) System.out.println("Mais vous avez eu un indice...");
                     winGames++;
                     newGame = yesNoChoice(sc,"On refait une partie");
-                    System.out.println(newGame);
                     if (newGame) return;
                 else continue;
                 }
 
                 // nombre de bonnes couleurs mais mal placées
-                int goodColors = getGoodColors(tourCount, tabGoodResults, combinaisonSecrete, tabColors);
-                tabGoodResults[tourCount + 1][1] = goodColors + "/4 \t";
+                int goodColors = getGoodColors(combinaisonSecrete, tabColors);
+                tabGoodResults[tourCount + 1][1] = goodColors + "/" + NB_COLORS + " \t";
 
 
                 //-------------------- fin de tour, on fait tourner le compteur de tour et on affiche le tableau de résultats
@@ -150,20 +154,27 @@ public class ProjetMasterMind {
                  if (tourCount == NB_TOUR_JEU){
                      System.out.println("\nVous avez perdu... Voici la combinaison qu'il fallait trouver : \n" + Arrays.toString(combinaisonSecrete));
                      newGame = yesNoChoice(sc,"On refait une partie");
+                     if (newGame) return;
+                     else continue;
                  }
                 }
+
             //---------------------------Sortie de la boule do while si plus de 12 tours -------------------
             while (tourCount < NB_TOUR_JEU || !newGame);
-        System.out.println("Vous avez gagne " + winGames + " manches sur " + numberOfGames + ". \nBye !");
+
+
+        System.out.println("Vous avez gagné " + winGames + " manches sur " + numberOfGames + ". \nBye !");
+
         sc.close();
 
     }
 
 
 
-    //---------------------- fonctions -----------------------//
+    //---------------------- méthodes -----------------------//
 
     //(re)afficher le fichier d'aide
+
     static void helpContext() {
         System.out.println("\nBut du jeu : \nTrouver la combinaison secrète de quatre couleurs DIFFERENTES en 12 coups. A chaque tour, le jeu renvoit les infos suivantes : ");
         System.out.println("- La combinaison choisie");
@@ -175,7 +186,7 @@ public class ProjetMasterMind {
 
     // questions yes/no utilisateur
 
-     static boolean yesNoChoice(Scanner sc, String userYesNoMessage) {
+    static boolean yesNoChoice(Scanner sc, String userYesNoMessage) {
         String choixUser;
         String[] userChoice = {"yes", "no", "y", "n"};
 
@@ -193,11 +204,23 @@ public class ProjetMasterMind {
         return false;
     }
 
-    static String[][]  makeTabResultLabels(String[][] tabResult, String[][] tabColResLabels, int NB_TOUR_JEU) {
-        tabResult[0][0] = tabColResLabels[0][0];
-        for (int i = 1; i < NB_TOUR_JEU+1; i++) {
-            tabResult[i][0] = "Tour n°" + i;
+    //fabrication des labels du tableau de résultats
+
+    static String[][]  makeTabResultLabels(int NB_COLORS, int NB_TOUR_JEU) {
+
+        String[][] tabResult = new String[NB_TOUR_JEU+1][NB_COLORS+1]; //résultat d'un tour
+        String[][] tabColResLabels = new String[1][NB_COLORS+1];
+
+        for (int i = 0; i < tabColResLabels[0].length; i++) {
+            if (i == 0) tabColResLabels[0][i] = "\t \t";
+            else tabColResLabels[0][i] = i + " \t";
         }
+
+        for (int i = 0; i < NB_TOUR_JEU+1; i++) {
+            if (i==0) tabResult[i][0] = tabColResLabels[0][0];
+            else tabResult[i][0] = "Tour n°" + i;
+        }
+
         for (int j = 1; j < tabColResLabels[0].length; j++) {
             tabResult[0][j] = tabColResLabels[0][j];
         }
@@ -206,15 +229,18 @@ public class ProjetMasterMind {
 
     }
 
-    static String[]  makeTabGoodResultLabels( String[] tabGoodResult,String[] tabColGoodResLabel) {
+    //fabrication du tableau des bons résultats
+
+    static void makeTabGoodResultLabels(String[] tabGoodResult, String[] tabColGoodResLabel) {
 
         for (int j = 0; j < tabGoodResult.length; j++) {
             tabGoodResult[j] = tabColGoodResLabel[j];
         }
-        return tabGoodResult;
     }
 
-    static int getGoodColors(int tourCount, String[][] tabGoodResults, String[] combinaisonSecrete, String[] tabColors) {
+    //compteur des bonnes couleurs de la série
+
+    static int getGoodColors(String[] combinaisonSecrete, String[] tabColors) {
         int goodColors = 0;
         for (int i = 0; i < tabColors.length; i++) {
             if (isIn(tabColors[i], combinaisonSecrete) && !combinaisonSecrete[i].equals(tabColors[i])) {
@@ -225,7 +251,9 @@ public class ProjetMasterMind {
         return goodColors;
     }
 
-    static int getGoodPlaceColor(int tourCount, String[][] tabGoodResults, String[] combinaisonSecrete, String[] tabColors) {
+    //compteur des bonnes couleurs bien placées de la série
+
+    static int getGoodPlaceColor(String[] combinaisonSecrete, String[] tabColors) {
         int goodPlaceColor = 0;
         // vérif du nombre de couleurs bien placées.
         for (int i = 0; i < tabColors.length; i++) {
@@ -242,7 +270,7 @@ public class ProjetMasterMind {
 
     static boolean doesUserWin(int goodPlaceColor, String[] combinaisonSecrete){
     boolean userWin = false;
-    if (goodPlaceColor == 4) {
+    if (goodPlaceColor == NB_COLORS) {
         System.out.println("Bien joué, vous avez gagné ! " + Arrays.toString(combinaisonSecrete));
         userWin = true;
 
@@ -268,7 +296,7 @@ public class ProjetMasterMind {
 
     }
 
-// affichage d'un tableau à double entrée
+    // affichage d'un tableau à double entrée
 
     static void affichageTabDoubleEntree(String[][] tabDoubleEntree, int nbLignes) {
         for (int i = 0; i < nbLignes; i++) {
@@ -305,6 +333,8 @@ public class ProjetMasterMind {
 
     }
 
+    //test de la validité de l'entrée de l'utilisateur
+
     static int testUserEnter(String choixCouleur, String[] TAB_REF_COLORS, String[] tabColors  ){
         int userEnter;
         if(isIn(choixCouleur, tabColors)){userEnter = 2;}
@@ -319,13 +349,14 @@ public class ProjetMasterMind {
     return userEnter;
 }
 
-static String getHint(String[] randomCombination){
+    //donne un indice à l'utilisateur
+
+    static void getHint(String[] randomCombination){
     int position = (int) (Math.random() * (randomCombination.length));
     String theHint = randomCombination[position];
     System.out.println("Indice : l'une des couleurs est " + theHint);
-    return  theHint;
 
-}
+    }
 
 
 
